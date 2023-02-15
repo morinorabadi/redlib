@@ -1,11 +1,11 @@
 # redlib
 
-this small library create for web games
+this small and light weight library created for games and functional web page
+contain an event class to call custom signal events  
+and some useful global events
 
-# options
-1.fps
 
-# Event calss
+# Event class
 ```javascript
 
 // create event object 
@@ -42,25 +42,39 @@ event.callEvent("test", "are events good?")
 
 ```
 
-# redlib core global event events
-base on option call process event useally 60 times per second
-process      -> number   return delta ( times passed from last process event )
+# redlib core globalEvent object
 
-handele window resize event 
-resize      -> resize Object contain x : window.innerWidth and y : window.innerHeight and isMobile and currentOrientation and defaultOrientation
+redlib core globalEvent object contain some use full event that you can use in you project
 
-handle mobile and desktop, scroll and touch events 
+base on fps option process event usually called 60 times per second
+this event use "window.requestAnimationFrame" in background 
 
-scroll       -> number
-touchDrag    -> Vector2  base on screen result is always between -1 and 1
-touchMove    -> Vector2  base on screen result is always between -1 and 1
-touchStart   -> Vector2  base on screen result is always between -1 and 1
-touchEnd     -> none
++ process      -> delta - currentTime (  delta : times passed from last process event )
 
-```javascrip
+
+handel window resize event 
+
++ resize      -> resize Object contain x : window.innerWidth and y : window.innerHeight and isMobile and currentOrientation and defaultOrientation
+
+
+
+handle mobile touch events  
+handle desktop mouse events  
+handle desktop scroll event
+
+
++ scroll       -> return number ( hwo many pixel use scroll )  
++ touchDrag    -> return Vector2  (base on screen result is always between -1 and 1)  
++ touchMove    -> return Vector2  (base on screen result is always between -1 and 1)  
++ touchStart   -> return Vector2  (base on screen result is always between -1 and 1)  
++ touchEnd     -> return none
+
+```javascript
 
 // create redLibCore instance
-const redLibCore = new RedLib()
+const redLibCore = new RedLib({  
+    // fps : 60 // by default fps is 60  
+})
 
 // add process event
 redLibCore.globalEvent.addCallBack('process', (delta, currentTime) => {
@@ -77,5 +91,42 @@ redLibCore.globalEvent.addCallBack('resize', (resizeObject) => {
     const { x , y} = resizeObject
     console.log(`on window resize event screen width is ${x}, screen height is ${y}`);
 })
+
+// add touch call back
+redLibCore.globalEvent.addCallBack('touchStart', (touch) => {
+    const { x , y } = touch
+    console.log(`on window mouse or touch event x is ${x}, and y is ${y}`);
+})
+
+
+```
+
+# InputConverter class
+
+you can use this function to get touch input -1 to 1
+base on object that you pass in
+
+```javascript
+
+// grab test element
+const test = document.getElementById('test')
+
+// create InputConverter object
+const testConverter = new InputConverter(test)
+
+// add InputConverter resize function to global resize events
+redlibcore.addCallBack("resize", () => {
+    testConverter.resize()
+})
+
+// convert touch object in global touchstart event 
+redlibcore.addCallBack("touchstart", (touch) => {
+    // convert touch event
+    const convertedInput = testConverter.convert(touch)
+})
+
+// resize manually once in the end
+testConverter.resize()
+
 
 ```
