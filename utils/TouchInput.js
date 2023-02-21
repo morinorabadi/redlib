@@ -104,9 +104,11 @@ export default class TouchInput
         return this.isTouched
     }
     resizePoints(points){
-        return new Vector2(
-            points.x / this.sizes.x * 2 - 1,
-            points.y / this.sizes.y * 2 - 1
-        )
+        return { 
+            x : points.x / this.sizes.x * 2 - 1,
+            y : points.y / this.sizes.y * 2 - 1,
+            xPixel : points.x,
+            yPixel : points.y,
+        }
     }
 }
